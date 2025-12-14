@@ -1,0 +1,58 @@
+/* Visual CSS Editor - Highlighter Styles */
+/* These styles are injected into the page for element inspection */
+
+#vce-overlay {
+    position: fixed !important;
+    pointer-events: none !important;
+    z-index: 2147483646 !important;
+    border: 2px solid #007AFF !important;
+    background: rgba(0, 122, 255, 0.1) !important;
+    transition: all 0.1s ease !important;
+    box-sizing: border-box !important;
+}
+
+#vce-overlay.selected {
+    border-color: #34C759 !important;
+    background: rgba(52, 199, 89, 0.1) !important;
+}
+
+#vce-tooltip {
+    position: fixed !important;
+    z-index: 2147483647 !important;
+    background: #1C1C1E !important;
+    color: #FFFFFF !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    pointer-events: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    max-width: 350px !important;
+    word-break: break-word !important;
+}
+
+#vce-tooltip .tag {
+    color: #007AFF !important;
+    font-weight: 600 !important;
+}
+
+#vce-tooltip .selector {
+    color: #98989D !important;
+}
+
+#vce-tooltip .size {
+    color: #636366 !important;
+    margin-left: 8px !important;
+}
+
+/* Cursor change when inspect mode is active */
+body.vce-inspect-mode,
+body.vce-inspect-mode * {
+    cursor: crosshair !important;
+}
+
+/* Prevent interactions with elements while inspecting */
+body.vce-inspect-mode *:not(#vce-overlay):not(#vce-tooltip) {
+    user-select: none !important;
+}
