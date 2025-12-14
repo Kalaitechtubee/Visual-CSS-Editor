@@ -4,7 +4,7 @@ import { Crown, Settings, HelpCircle, Undo2, Redo2 } from 'lucide-react';
 import MainTabs from './MainTabs';
 import ElementSelector from './ElementSelector';
 import ChangesList from './ChangesList';
-import ProUpgrade from './ProUpgrade';
+
 import AIGeneration from '../edit/AIGeneration';
 import ApiKeySettings from '../settings/ApiKeySettings';
 import useEditorStore from '../../stores/editorStore';
@@ -99,15 +99,7 @@ export function SidePanel() {
                         </button>
                     </div>
 
-                    {!isPro && (
-                        <button
-                            onClick={() => setShowProModal(true)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-secondary to-purple-600 text-white text-xs font-medium hover:opacity-90 transition-opacity"
-                        >
-                            <Crown size={12} />
-                            Upgrade
-                        </button>
-                    )}
+
                     <button className="p-2 rounded-lg hover:bg-surface text-text-secondary">
                         <HelpCircle size={18} />
                     </button>
@@ -199,11 +191,9 @@ export function SidePanel() {
                         <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                             <span className="text-sm text-text-secondary">Apply to similar elements</span>
                             <div className="flex items-center gap-2">
-                                {!isPro && <span className="pro-badge">Pro</span>}
                                 <Toggle
                                     checked={applyToSimilar}
                                     onChange={setApplyToSimilar}
-                                    disabled={!isPro}
                                 />
                             </div>
                         </div>
@@ -228,131 +218,16 @@ export function SidePanel() {
 
                 {activeTab === 'page' && <PageSettings />}
 
-                {activeTab === 'css' && (
-                    isPro ? (
-                        <CSSView />
-                    ) : (
-                        <div className="p-6 text-center">
-                            <Crown size={48} className="mx-auto mb-4 text-secondary" />
-                            <h3 className="text-lg font-semibold mb-2">Pro Feature</h3>
-                            <p className="text-sm text-text-secondary mb-4">
-                                Upgrade to Pro to view and export generated CSS
-                            </p>
-                            <button
-                                onClick={() => setShowProModal(true)}
-                                className="btn bg-gradient-to-r from-secondary to-purple-600 text-white"
-                            >
-                                <Crown size={14} />
-                                Upgrade to Pro
-                            </button>
-                        </div>
-                    )
-                )}
+
 
                 {activeTab === 'settings' && <ApiKeySettings />}
             </div>
 
-            {/* Pro Modal */}
-            {showProModal && <ProUpgrade onClose={() => setShowProModal(false)} />}
+
         </div>
     );
 }
 
-// CSS View Component
-function CSSView() {
-    const { editedElements } = useEditorStore();
-    const [copied, setCopied] = useState(false);
-    const [format, setFormat] = useState('formatted'); // 'formatted', 'minified', 'tokens'
 
-    // Import the CSS generator utilities
-    const generateCSSOutput = () => {
-        if (editedElements.length === 0) return '/* No changes yet */';
-
-        if (format === 'tokens') {
-            // Generate design tokens
-            return generateDesignTokens(editedElements);
-        }
-
-        // Use the generateCSS utility with appropriate options
-        return generateCSS(editedElements, {
-            minify: format === 'minified',
-            includeComments: format === 'formatted'
-        });
-    };
-
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(generateCSSOutput());
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (error) {
-            console.error('Failed to copy:', error);
-        }
-    };
-
-    const handleExport = () => {
-        const css = generateCSSOutput();
-        const blob = new Blob([css], { type: 'text/css' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = format === 'tokens' ? 'design-tokens.css' : 'styles.css';
-        a.click();
-        URL.revokeObjectURL(url);
-    };
-
-    return (
-        <div className="p-4 space-y-4">
-            {/* Format Selection */}
-            <div className="flex items-center gap-2">
-                <span className="text-xs text-text-secondary">Format:</span>
-                <div className="flex gap-1">
-                    {['formatted', 'minified', 'tokens'].map((f) => (
-                        <button
-                            key={f}
-                            onClick={() => setFormat(f)}
-                            className={`px-2 py-1 text-xs rounded ${format === f
-                                ? 'bg-primary text-white'
-                                : 'bg-surface text-text-secondary hover:bg-surface-light'
-                                }`}
-                        >
-                            {f.charAt(0).toUpperCase() + f.slice(1)}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Header with actions */}
-            <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Generated CSS</h3>
-                <div className="flex gap-2">
-                    <button
-                        onClick={handleExport}
-                        className="btn btn-secondary text-xs"
-                    >
-                        Export
-                    </button>
-                    <button
-                        onClick={handleCopy}
-                        className="btn btn-secondary text-xs"
-                    >
-                        {copied ? 'Copied!' : 'Copy'}
-                    </button>
-                </div>
-            </div>
-
-            {/* CSS Output */}
-            <pre className="p-4 bg-surface rounded-lg text-xs font-mono text-text-primary overflow-x-auto whitespace-pre-wrap max-h-96 overflow-y-auto">
-                {generateCSSOutput()}
-            </pre>
-
-            {/* Stats */}
-            <div className="flex items-center justify-between text-xs text-text-muted">
-                <span>{editedElements.length} element(s) modified</span>
-                <span>{generateCSSOutput().length} characters</span>
-            </div>
-        </div>
-    );
-}
 
 export default SidePanel;

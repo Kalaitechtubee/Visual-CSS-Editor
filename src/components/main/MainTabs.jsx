@@ -8,7 +8,6 @@ export function MainTabs() {
     const tabs = [
         { id: 'edit', label: 'Edit', icon: Edit3 },
         { id: 'page', label: 'Page', icon: Settings },
-        { id: 'css', label: 'CSS', icon: FileCode, pro: true },
         { id: 'settings', label: 'Settings', icon: Key }
     ];
 

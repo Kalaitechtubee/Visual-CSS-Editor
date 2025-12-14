@@ -12,6 +12,7 @@ const useEditorStore = create(
             selectedElement: null,
             selectedPath: null,
             selectedHtml: '', // NEW: Store HTML content for AI generation
+            selectedAssets: [], // NEW: Store assets for AI generation
             currentStyles: {},
 
             // Edited elements history
@@ -73,6 +74,8 @@ const useEditorStore = create(
                 theme: 'dark',
                 autoApply: true,
                 applyToSimilar: false,
+                aiProvider: 'groq', // 'groq' | 'gemini'
+                geminiModel: 'gemini-2.0-flash',
             },
 
             // Actions
@@ -83,6 +86,7 @@ const useEditorStore = create(
                     selectedElement: data.tagName,
                     selectedPath: data.path,
                     selectedHtml: data.html || '', // Store HTML content
+                    selectedAssets: data.assets || [], // Store assets
                     currentStyles: data.styles || {},
                 });
             },
@@ -118,6 +122,7 @@ const useEditorStore = create(
                         selector,
                         styles,
                         html: get().selectedHtml || '', // Include HTML content
+                        assets: get().selectedAssets || [], // Include assets
                         tagName: get().selectedElement,
                         path: get().selectedPath,
                         createdAt: Date.now(),
@@ -173,6 +178,7 @@ const useEditorStore = create(
                     selectedElement: null,
                     selectedPath: null,
                     selectedHtml: '',
+                    selectedAssets: [],
                     currentStyles: {},
                 });
             },
